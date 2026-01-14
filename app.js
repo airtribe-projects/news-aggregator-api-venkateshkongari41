@@ -1,17 +1,37 @@
-const express = require('express');
-const app = express();
-const port = 3000;
+const express = require("express");
+const mongoose = require("mongoose");
+const server = express();
+require("dotenv").config();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+server.use(express.json());
+server.use(express.urlencoded({ extended: true }));
 
-app.listen(port, (err) => {
-    if (err) {
-        return console.log('Something bad happened', err);
-    }
-    console.log(`Server is listening on ${port}`);
+const authRoute = require("./Routes/AuthRoute");
+const preferencesRoute = require("./Routes/PreferencesRoute");
+const newsRoute = require("./Routes/NewsRoute");
+
+server.use("/auth", authRoute);
+server.use("/api", preferencesRoute);
+server.use("/api", newsRoute);
+
+const port = process.env.PORT;
+const DB_NAME = process.env.DB_NAME;
+const DB_CONNECTION_STRING = process.env.DB_CONNECTION_STRING;
+
+mongoose
+  .connect(DB_CONNECTION_STRING + DB_NAME)
+  .then(() => {
+    console.log("Connected to the database");
+  })
+  .catch((err) => {
+    console.error("Database connection error:", err);
+  });
+
+server.listen(port, (err) => {
+  if (err) {
+    return console.log("Something bad happened", err);
+  }
+  console.log(`Server is listening on ${port}`);
 });
 
-
-
-module.exports = app;
+module.exports = server;
