@@ -7,7 +7,12 @@ server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 
 const authRoute = require("./Routes/AuthRoute");
+const preferencesRoute = require("./Routes/PreferencesRoute");
+const newsRoute = require("./Routes/NewsRoute");
+
 server.use("/auth", authRoute);
+server.use("/api", preferencesRoute);
+server.use("/api", newsRoute);
 
 const port = process.env.PORT;
 const DB_NAME = process.env.DB_NAME;
